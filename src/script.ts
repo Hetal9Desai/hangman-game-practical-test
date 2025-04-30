@@ -124,3 +124,15 @@ const startTimer = (): void => {
     }
   }, 1000);
 };
+
+const gameOver = (isVictory: boolean): void => {
+  setTimeout(() => {
+    clearInterval(timerInterval);
+    const modalText = isVictory
+      ? `Yeah! You found the word:`
+      : `You Lost! The correct word was:`;
+    const modalParagraph = gameModal.querySelector("p") as HTMLElement;
+    modalParagraph.innerHTML = `${modalText} <b>${currentWord}</b>`;
+    gameModal.classList.add("show");
+  }, 300);
+};
