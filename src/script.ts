@@ -1,3 +1,32 @@
+document.getElementById("app")!.innerHTML = `
+  <div class="game-modal" id="over">
+    <div class="content">
+      <h4>Game Over!</h4>
+      <p>The correct word was: <b>rainbow</b></p>
+      <button class="play-again">Play Again</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="hangman-box">
+      <img
+        src="https://media.geeksforgeeks.org/wp-content/uploads/20240215173028/0.png"
+        alt="hangman-img"
+      />
+      <h1>Hangman Game</h1>
+      <div class="timer">
+        Time left: <span id="timer-display">3:00</span>
+      </div>
+    </div>
+    <div class="game-box">
+      <ul class="word-display"></ul>
+      <h4 class="hint-text">Hint: <b></b></h4>
+      <h4 class="guesses-text">Incorrect guesses: <b>0 / 6</b></h4>
+      <div class="keyboard"></div>
+    </div>
+  </div>
+`;
+
 const wordDisplay = document.querySelector(".word-display") as HTMLElement;
 const keyboardDiv = document.querySelector(".keyboard") as HTMLElement;
 const hangmanImage = document.querySelector(
@@ -14,14 +43,8 @@ interface QuizItem {
 }
 
 const codingQuiz: QuizItem[] = [
-  {
-    word: "variable",
-    hint: "A placeholder for a value.",
-  },
-  {
-    word: "function",
-    hint: "A block of code that performs a specific task.",
-  },
+  { word: "variable", hint: "A placeholder for a value." },
+  { word: "function", hint: "A block of code that performs a specific task." },
   {
     word: "loop",
     hint: "A programming structure that repeats a sequence of instructions until a specific condition is met.",
@@ -38,10 +61,7 @@ const codingQuiz: QuizItem[] = [
     word: "conditional",
     hint: "A statement that executes a block of code if a specified condition is true.",
   },
-  {
-    word: "parameter",
-    hint: "A variable in a method definition.",
-  },
+  { word: "parameter", hint: "A variable in a method definition." },
   {
     word: "algorithm",
     hint: "A step-by-step procedure or formula for solving a problem.",
@@ -184,5 +204,4 @@ document.addEventListener("keydown", (e) => {
 });
 
 getRandomWord();
-
 playAgainBtn.addEventListener("click", getRandomWord);
