@@ -122,7 +122,7 @@ const initGame = (button: HTMLButtonElement, clickedLetter: string): void => {
       if (letter === clickedLetter) {
         correctLetters.push(letter);
         (wordDisplay.querySelectorAll("li")[index] as HTMLElement).innerText =
-          letter; // Type assertion
+          letter;
         (
           wordDisplay.querySelectorAll("li")[index] as HTMLElement
         ).classList.add("guessed");
