@@ -106,21 +106,24 @@ body {
 
 :where(.game-modal, .keyboard) button {
   color: #ffffff;
+  /* White text color */
   border-radius: 14px;
   cursor: pointer;
   outline: none;
   padding: 10px 20px;
+  /* Increased padding for better visibility */
   border: none;
   margin: 1px;
   font-size: 1rem;
   font-weight: 600;
   background: #408e46;
-
+  /* Light red background */
   text-transform: uppercase;
 }
 
 .keyboard button {
   padding: 10px 20px;
+  /* Increased padding for better visibility */
   width: calc(100% / 9 - 5px);
 }
 
@@ -173,6 +176,7 @@ body {
 
 .game-modal p b {
   color: #e90e0e;
+  /* Dark green color */
   font-size: 20px;
   font-weight: 600;
 }
