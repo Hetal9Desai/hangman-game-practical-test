@@ -136,3 +136,29 @@ const gameOver = (isVictory: boolean): void => {
     gameModal.classList.add("show");
   }, 300);
 };
+
+const initGame = (button: HTMLButtonElement, clickedLetter: string): void => {
+  button.disabled = true;
+
+  if (currentWord.includes(clickedLetter)) {
+    [...currentWord].forEach((letter, index) => {
+      if (letter === clickedLetter) {
+        correctLetters.push(letter);
+        const letterEls = wordDisplay.querySelectorAll("li");
+        letterEls[index].innerHTML = letter;
+        letterEls[index].classList.add("guessed");
+      }
+    });
+  } else {
+    wrongGuessCount++;
+    hangmanImage.src = `https://i.imgur.com/hangmanStage${wrongGuessCount}.png`;
+  }
+
+  guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
+
+  const allLettersGuessed = currentWord
+    .split("")
+    .every((l) => correctLetters.includes(l));
+  if (wrongGuessCount === maxGuesses) return gameOver(false);
+  if (allLettersGuessed) return gameOver(true);
+};
