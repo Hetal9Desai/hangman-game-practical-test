@@ -71,7 +71,7 @@ const getRandomWord = () => {
     const { word, hint } = codingQuiz[Math.floor(Math.random() * codingQuiz.length)];
     currentWord = word;
     console.log(word);
-    document.querySelector(".hint-text b").innerText = hint; // Type assertion for innerText
+    document.querySelector(".hint-text b").innerText = hint;
     resetGame();
 };
 const startTimer = () => {
@@ -91,7 +91,7 @@ const gameOver = (isVictory) => {
         const modalText = isVictory
             ? `Yeah! You found the word:`
             : `You Lost! The correct word was:`;
-        gameModal.querySelector("p").innerHTML = `${modalText} <b>${currentWord}</b>`; // Type assertion for innerText
+        gameModal.querySelector("p").innerHTML = `${modalText} <b>${currentWord}</b>`;
         gameModal.classList.add("show");
     }, 300);
 };
@@ -102,7 +102,7 @@ const initGame = (button, clickedLetter) => {
                 correctLetters.push(letter);
                 wordDisplay.querySelectorAll("li")[index].innerText =
                     letter; // Type assertion
-                wordDisplay.querySelectorAll("li")[index].classList.add("guessed"); // Type assertion
+                wordDisplay.querySelectorAll("li")[index].classList.add("guessed");
             }
         });
     }
