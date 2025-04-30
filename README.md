@@ -48,3 +48,7 @@ Go To Live Server
     You have 6 wrong guesses and 30 seconds to guess the full word.
 
     Game ends with a success or failure modal.
+
+## Deploy Link:
+
+https://scintillating-brigadeiros-27e78e.netlify.app/
