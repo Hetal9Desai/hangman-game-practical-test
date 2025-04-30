@@ -1,27 +1,30 @@
-type QuizItem = {
-  word: string;
-  hint: string;
-};
-
-// DOM References
-const wordDisplay = document.querySelector(".word-display") as HTMLUListElement;
-const keyboardDiv = document.querySelector(".keyboard") as HTMLDivElement;
+const wordDisplay = document.querySelector(".word-display") as HTMLElement;
+const keyboardDiv = document.querySelector(".keyboard") as HTMLElement;
 const hangmanImage = document.querySelector(
   ".hangman-box img"
 ) as HTMLImageElement;
 const guessesText = document.querySelector(".guesses-text b") as HTMLElement;
-const gameModal = document.querySelector(".game-modal") as HTMLDivElement;
+const gameModal = document.querySelector(".game-modal") as HTMLElement;
 const playAgainBtn = document.querySelector(".play-again") as HTMLButtonElement;
-const timerDisplay = document.querySelector("#timer-display") as HTMLElement;
-const hintText = document.querySelector(".hint-text b") as HTMLElement;
+const timerDisplay = document.querySelector(".timer") as HTMLElement;
 
-// Quiz Items
+interface QuizItem {
+  word: string;
+  hint: string;
+}
+
 const codingQuiz: QuizItem[] = [
-  { word: "variable", hint: "A placeholder for a value." },
-  { word: "function", hint: "A block of code that performs a specific task." },
+  {
+    word: "variable",
+    hint: "A placeholder for a value.",
+  },
+  {
+    word: "function",
+    hint: "A block of code that performs a specific task.",
+  },
   {
     word: "loop",
-    hint: "A programming structure that repeats instructions until a condition is met.",
+    hint: "A programming structure that repeats a sequence of instructions until a specific condition is met.",
   },
   {
     word: "array",
@@ -35,10 +38,13 @@ const codingQuiz: QuizItem[] = [
     word: "conditional",
     hint: "A statement that executes a block of code if a specified condition is true.",
   },
-  { word: "parameter", hint: "A variable in a method definition." },
+  {
+    word: "parameter",
+    hint: "A variable in a method definition.",
+  },
   {
     word: "algorithm",
-    hint: "A step-by-step procedure for solving a problem.",
+    hint: "A step-by-step procedure or formula for solving a problem.",
   },
   {
     word: "debugging",
@@ -48,76 +54,48 @@ const codingQuiz: QuizItem[] = [
     word: "syntax",
     hint: "The rules that govern the structure of statements in a programming language.",
   },
-  {
-    word: "nasa",
-    hint: "American space program, abbr.",
-  },
-  {
-    word: "media",
-    hint: "Marshall McLuhan's main field of study",
-  },
-  {
-    word: "tele",
-    hint: "Prefix for vision or phone",
-  },
-  {
-    word: "email",
-    hint: "Computer message",
-  },
 ];
 
-// Game State
-let currentWord: string;
-let correctLetters: string[] = [];
-let wrongGuessCount = 0;
-let timerInterval: number;
+let currentWord: string,
+  correctLetters: string[],
+  wrongGuessCount: number,
+  timerInterval: number;
 const maxGuesses = 6;
 const gameTimeLimit = 30;
 
-// Game Functions
 const resetGame = (): void => {
   correctLetters = [];
   wrongGuessCount = 0;
-  hangmanImage.src = `https://images.unsplash.com/photo-1506748686211-6e5c9f53b883`;
+  hangmanImage.src = `https://media.geeksforgeeks.org/wp-content/uploads/20240215173028/0.png`;
   guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
-
-  keyboardDiv.querySelectorAll("button").forEach((btn) => {
-    (btn as HTMLButtonElement).disabled = false;
-  });
-
+  keyboardDiv
+    .querySelectorAll("button")
+    .forEach((btn) => (btn.disabled = false));
   wordDisplay.innerHTML = currentWord
     .split("")
     .map(() => `<li class="letter"></li>`)
     .join("");
-
   clearInterval(timerInterval);
   startTimer();
   gameModal.classList.remove("show");
 };
 
 const getRandomWord = (): void => {
-  const randomItem = codingQuiz[Math.floor(Math.random() * codingQuiz.length)];
-  currentWord = randomItem.word;
-  hintText.innerText = randomItem.hint;
+  const { word, hint } =
+    codingQuiz[Math.floor(Math.random() * codingQuiz.length)];
+  currentWord = word;
+  console.log(word);
+  (document.querySelector(".hint-text b") as HTMLElement).innerText = hint; // Type assertion for innerText
   resetGame();
 };
 
 const startTimer = (): void => {
   let timeLeft = gameTimeLimit;
-
-  const updateTimer = () => {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    timerDisplay.innerText = `Time left: ${minutes}:${
-      seconds < 10 ? "0" : ""
-    }${seconds}`;
-  };
-
-  updateTimer();
-
-  timerInterval = window.setInterval(() => {
+  timerInterval = setInterval(() => {
     timeLeft--;
-    updateTimer();
+    timerDisplay.innerText = `Time left: ${Math.floor(timeLeft / 60)}:${
+      timeLeft % 60 < 10 ? "0" : ""
+    }${timeLeft % 60}`;
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
       gameOver(false);
@@ -131,48 +109,67 @@ const gameOver = (isVictory: boolean): void => {
     const modalText = isVictory
       ? `Yeah! You found the word:`
       : `You Lost! The correct word was:`;
-    const modalParagraph = gameModal.querySelector("p") as HTMLElement;
-    modalParagraph.innerHTML = `${modalText} <b>${currentWord}</b>`;
+    (
+      gameModal.querySelector("p") as HTMLElement
+    ).innerHTML = `${modalText} <b>${currentWord}</b>`; // Type assertion for innerText
     gameModal.classList.add("show");
   }, 300);
 };
 
 const initGame = (button: HTMLButtonElement, clickedLetter: string): void => {
-  button.disabled = true;
-
   if (currentWord.includes(clickedLetter)) {
     [...currentWord].forEach((letter, index) => {
       if (letter === clickedLetter) {
         correctLetters.push(letter);
-        const letterEls = wordDisplay.querySelectorAll("li");
-        letterEls[index].innerHTML = letter;
-        letterEls[index].classList.add("guessed");
+        (wordDisplay.querySelectorAll("li")[index] as HTMLElement).innerText =
+          letter; // Type assertion
+        (
+          wordDisplay.querySelectorAll("li")[index] as HTMLElement
+        ).classList.add("guessed"); // Type assertion
       }
     });
   } else {
     wrongGuessCount++;
-    hangmanImage.src = `https://i.imgur.com/hangmanStage${wrongGuessCount}.png`;
+    switch (wrongGuessCount) {
+      case 1:
+        hangmanImage.src = `https://media.geeksforgeeks.org/wp-content/uploads/20240215173033/1.png`;
+        break;
+      case 2:
+        hangmanImage.src = `https://media.geeksforgeeks.org/wp-content/uploads/20240215173038/2.png`;
+        break;
+      case 3:
+        hangmanImage.src = `https://media.geeksforgeeks.org/wp-content/uploads/20240215172733/3.png`;
+        break;
+      case 4:
+        hangmanImage.src = `https://media.geeksforgeeks.org/wp-content/uploads/20240215173815/4.png`;
+        break;
+      case 5:
+        hangmanImage.src = `https://media.geeksforgeeks.org/wp-content/uploads/20240215173859/5.png`;
+        break;
+      case 6:
+        hangmanImage.src = `https://media.geeksforgeeks.org/wp-content/uploads/20240215173931/6.png`;
+        break;
+      default:
+        break;
+    }
   }
 
+  button.disabled = true;
   guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
 
-  const allLettersGuessed = currentWord
-    .split("")
-    .every((l) => correctLetters.includes(l));
   if (wrongGuessCount === maxGuesses) return gameOver(false);
-  if (allLettersGuessed) return gameOver(true);
+  if (correctLetters.length === currentWord.length) return gameOver(true);
 };
 
-// Keyboard Creation
 for (let i = 97; i <= 122; i++) {
   const button = document.createElement("button");
-  const char = String.fromCharCode(i);
-  button.innerText = char;
-  button.addEventListener("click", () => initGame(button, char));
+  button.innerText = String.fromCharCode(i);
   keyboardDiv.appendChild(button);
+  button.addEventListener("click", (e) =>
+    initGame(e.target as HTMLButtonElement, String.fromCharCode(i))
+  );
 }
 
-// Keyboard Input Support
 document.addEventListener("keydown", (e) => {
   const pressedKey = e.key.toLowerCase();
   if (pressedKey >= "a" && pressedKey <= "z") {
@@ -186,6 +183,6 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Game Initialization
 getRandomWord();
+
 playAgainBtn.addEventListener("click", getRandomWord);
