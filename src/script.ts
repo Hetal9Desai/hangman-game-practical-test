@@ -162,3 +162,30 @@ const initGame = (button: HTMLButtonElement, clickedLetter: string): void => {
   if (wrongGuessCount === maxGuesses) return gameOver(false);
   if (allLettersGuessed) return gameOver(true);
 };
+
+// Keyboard Creation
+for (let i = 97; i <= 122; i++) {
+  const button = document.createElement("button");
+  const char = String.fromCharCode(i);
+  button.innerText = char;
+  button.addEventListener("click", () => initGame(button, char));
+  keyboardDiv.appendChild(button);
+}
+
+// Keyboard Input Support
+document.addEventListener("keydown", (e) => {
+  const pressedKey = e.key.toLowerCase();
+  if (pressedKey >= "a" && pressedKey <= "z") {
+    const button = Array.from(keyboardDiv.querySelectorAll("button")).find(
+      (btn) => btn.innerText.toLowerCase() === pressedKey
+    ) as HTMLButtonElement;
+
+    if (button && !button.disabled) {
+      initGame(button, pressedKey);
+    }
+  }
+});
+
+// Game Initialization
+getRandomWord();
+playAgainBtn.addEventListener("click", getRandomWord);
