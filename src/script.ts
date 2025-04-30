@@ -73,3 +73,54 @@ let wrongGuessCount = 0;
 let timerInterval: number;
 const maxGuesses = 6;
 const gameTimeLimit = 30;
+
+// Game Functions
+const resetGame = (): void => {
+  correctLetters = [];
+  wrongGuessCount = 0;
+  hangmanImage.src = `https://images.unsplash.com/photo-1506748686211-6e5c9f53b883`;
+  guessesText.innerText = `${wrongGuessCount} / ${maxGuesses}`;
+
+  keyboardDiv.querySelectorAll("button").forEach((btn) => {
+    (btn as HTMLButtonElement).disabled = false;
+  });
+
+  wordDisplay.innerHTML = currentWord
+    .split("")
+    .map(() => `<li class="letter"></li>`)
+    .join("");
+
+  clearInterval(timerInterval);
+  startTimer();
+  gameModal.classList.remove("show");
+};
+
+const getRandomWord = (): void => {
+  const randomItem = codingQuiz[Math.floor(Math.random() * codingQuiz.length)];
+  currentWord = randomItem.word;
+  hintText.innerText = randomItem.hint;
+  resetGame();
+};
+
+const startTimer = (): void => {
+  let timeLeft = gameTimeLimit;
+
+  const updateTimer = () => {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    timerDisplay.innerText = `Time left: ${minutes}:${
+      seconds < 10 ? "0" : ""
+    }${seconds}`;
+  };
+
+  updateTimer();
+
+  timerInterval = window.setInterval(() => {
+    timeLeft--;
+    updateTimer();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      gameOver(false);
+    }
+  }, 1000);
+};
